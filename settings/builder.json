@@ -1,0 +1,24 @@
+{
+  "appKey": "",
+  "appSecret": "",
+  "excludeScenes": [],
+  "includeAnySDK": false,
+  "includeSdk": [
+    "anysdk"
+  ],
+  "inlineSpriteFrames": true,
+  "mergeStartScene": true,
+  "oauthLoginServer": "",
+  "orientation": {
+    "landscapeLeft": true,
+    "landscapeRight": true,
+    "portrait": false,
+    "upsideDown": false
+  },
+  "packageName": "org.yiyou.niuniu",
+  "privateKey": "",
+  "renderMode": "1",
+  "startScene": "e061b48c-7436-439a-8abd-f93a3b01abc9",
+  "title": "niuniuTest",
+  "webOrientation": "landscape"
+}
