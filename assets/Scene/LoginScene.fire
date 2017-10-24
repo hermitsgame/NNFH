@@ -208,7 +208,7 @@
     },
     "_enabled": true,
     "_spriteFrame": {
-      "__uuid__": "bf5209a3-a790-48eb-aece-afc9770f5109"
+      "__uuid__": "726e814a-6140-46fc-96ba-e3b43ea03b1f"
     },
     "_type": 0,
     "_sizeMode": 0,
@@ -268,7 +268,7 @@
     "_tag": -1,
     "_opacityModifyRGB": false,
     "_id": "b9b01j7EstA2J+O86a8YbDi",
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 6
