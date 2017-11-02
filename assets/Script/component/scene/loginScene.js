@@ -49,15 +49,15 @@ cc.Class({
             this.btn_loginNode1.x = 0;
             console.log("cc.sys.platform == cc.sys.DESKTOP_BROWSER");
         }else if(cc.sys.platform == cc.sys.ANDROID){
-            confige.shareTitle = "我爱牛牛,快来下载加入吧~";
-            confige.shareDes = "我爱牛牛,一起来玩!";
+            confige.shareTitle = "凤凰手游牛牛,快来下载加入吧~";
+            confige.shareDes = "凤凰手游牛牛,一起来玩!";
             confige.curUsePlatform = 1;
             this.btn_loginNode1.active = false;
             this.btn_loginNode2.x = 0;
             console.log("cc.sys.platform == cc.sys.ANDROID");
         }else if(cc.sys.platform == cc.sys.IPHONE || cc.sys.platform == cc.sys.IPAD){
-            confige.shareTitle = "我爱牛牛,快来下载加入吧~";
-            confige.shareDes = "我爱牛牛,一起来玩!";
+            confige.shareTitle = "凤凰手游牛牛,快来下载加入吧~";
+            confige.shareDes = "凤凰手游牛牛,一起来玩!";
             confige.curUsePlatform = 2;
             console.log("cc.sys.platform == cc.sys.IPHONE");
             this.btn_loginNode1.active = false;
@@ -65,8 +65,8 @@ cc.Class({
             if(cc.sys.platform == cc.sys.IPAD)
                 cc.view.setDesignResolutionSize(1280,720,cc.ResolutionPolicy.EXACT_FIT);
         }else if(cc.sys.platform == cc.sys.MOBILE_BROWSER){
-            confige.shareTitle = "我爱牛牛,点击可玩,无需下载";
-            confige.shareDes = "我爱牛牛H5,安全无挂,放心畅玩!";
+            confige.shareTitle = "凤凰手游牛牛,点击可玩,无需下载";
+            confige.shareDes = "凤凰手游牛牛H5,安全无挂,放心畅玩!";
             // cc.game.setFrameRate(40);
             // confige.curUsePlatform = 0;
             // this.btn_loginNode2.active = false;
@@ -165,9 +165,9 @@ cc.Class({
         this.updateLayer = this.node.getChildByName("updateLayer").getComponent("HotUpdate");
         this.updateLayer.onInit();
 
-        if (cc.sys.isNative) {
-            this.updateLayer.checkUpdate();
-        }
+        // if (cc.sys.isNative) {
+        //     this.updateLayer.checkUpdate();
+        // }
     },
     
     start: function () {
@@ -598,9 +598,10 @@ cc.Class({
     },
 
     onBtnWeixinClicked:function(){
+        this.btn_login2.interactable = false;
         if(confige.curUsePlatform == 1 || confige.curUsePlatform == 2)
         {
-            this.showLoading();
+            // this.showLoading();
             confige.loginType = 1;
             var lastLoginCount = 99;
             if(cc.sys.localStorage.getItem("wxLastLoginDay") != null)
@@ -615,6 +616,7 @@ cc.Class({
                 }else if(confige.curUsePlatform == 2){
                     jsb.reflection.callStaticMethod("JSCallOC", "WXLogin"); 
                 }
+                this.showLoading();
             }else{
                 confige.WX_REFRESH_TOKEN = cc.sys.localStorage.getItem('wxRefreshToken');
                 var curRefreshToken = confige.WX_REFRESH_TOKEN;
@@ -628,6 +630,7 @@ cc.Class({
         var xmlHttp = this.createXMLHttpRequest();
 
         var httpCallback = function(){
+            self.btn_login2.interactable = true;
             var loginJson = JSON.parse(xmlHttp.responseText);
             confige.WX_LOGIN_RETURN = loginJson;
             confige.WX_ACCESS_TOKEN = loginJson.access_token;
@@ -662,17 +665,33 @@ cc.Class({
         var httpCallback = function(){
             var loginJson = JSON.parse(xmlHttp.responseText);
             confige.WX_LOGIN_RETURN = loginJson;
-            confige.WX_ACCESS_TOKEN = loginJson.access_token;
-            confige.WX_OPEN_ID = loginJson.openid;
-            confige.WX_REFRESH_TOKEN = loginJson.refresh_token;
-            // jsb.reflection.callStaticMethod("org/cocos2dx/javascript/JSCallJAVA", "JAVALog", "(Ljava/lang/String;)V", "WX_REFRESH_TOKEN");
-            // jsb.reflection.callStaticMethod("org/cocos2dx/javascript/JSCallJAVA", "JAVALog", "(Ljava/lang/String;)V", loginJson.refresh_token);
-            // jsb.reflection.callStaticMethod("org/cocos2dx/javascript/JSCallJAVA", "JAVALog", "(Ljava/lang/String;)V", "WX_OPEN_ID");
-            // jsb.reflection.callStaticMethod("org/cocos2dx/javascript/JSCallJAVA", "JAVALog", "(Ljava/lang/String;)V", loginJson.openid);
-            // jsb.reflection.callStaticMethod("org/cocos2dx/javascript/JSCallJAVA", "JAVALog", "(Ljava/lang/String;)V", "WX_ACCESS_TOKEN");
-            // jsb.reflection.callStaticMethod("org/cocos2dx/javascript/JSCallJAVA", "JAVALog", "(Ljava/lang/String;)V", loginJson.access_token);
-            pomelo.clientLogin(confige.WX_OPEN_ID, confige.WX_ACCESS_TOKEN);
-            cc.sys.localStorage.setItem("wxRefreshToken",loginJson.refresh_token);
+            if(loginJson.openid && loginJson.access_token)
+            {
+                confige.WX_ACCESS_TOKEN = loginJson.access_token;
+                confige.WX_OPEN_ID = loginJson.openid;
+                confige.WX_REFRESH_TOKEN = loginJson.refresh_token;
+                // jsb.reflection.callStaticMethod("org/cocos2dx/javascript/JSCallJAVA", "JAVALog", "(Ljava/lang/String;)V", "WX_REFRESH_TOKEN");
+                // jsb.reflection.callStaticMethod("org/cocos2dx/javascript/JSCallJAVA", "JAVALog", "(Ljava/lang/String;)V", loginJson.refresh_token);
+                // jsb.reflection.callStaticMethod("org/cocos2dx/javascript/JSCallJAVA", "JAVALog", "(Ljava/lang/String;)V", "WX_OPEN_ID");
+                // jsb.reflection.callStaticMethod("org/cocos2dx/javascript/JSCallJAVA", "JAVALog", "(Ljava/lang/String;)V", loginJson.openid);
+                // jsb.reflection.callStaticMethod("org/cocos2dx/javascript/JSCallJAVA", "JAVALog", "(Ljava/lang/String;)V", "WX_ACCESS_TOKEN");
+                // jsb.reflection.callStaticMethod("org/cocos2dx/javascript/JSCallJAVA", "JAVALog", "(Ljava/lang/String;)V", loginJson.access_token);
+                pomelo.clientLogin(confige.WX_OPEN_ID, confige.WX_ACCESS_TOKEN);
+                cc.sys.localStorage.setItem("wxRefreshToken",loginJson.refresh_token);
+                self.showLoading();
+                self.btn_login2.interactable = true;
+            }else{
+                console.log("refresh error");
+                cc.sys.localStorage.setItem("wxRefreshToken",null);
+                if(confige.curUsePlatform == 1)
+                {
+                    jsb.reflection.callStaticMethod("org/cocos2dx/javascript/JSCallJAVA", "WXLogin", "()V");
+                }else if(confige.curUsePlatform == 2){
+                    jsb.reflection.callStaticMethod("JSCallOC", "WXLogin"); 
+                }
+                self.showLoading();
+                self.btn_login2.interactable = true;
+            }
         };
 
         this.scheduleOnce(function() {
@@ -711,6 +730,7 @@ cc.Class({
     WXCancle:function(){
         // this.btn_loginNode1.active = true;
         this.btn_loginNode2.active = true;
+        this.btn_login2.interactable = true;
         this.loadingLayer.hideLoading();
     },
 

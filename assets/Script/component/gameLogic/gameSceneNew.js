@@ -567,6 +567,8 @@ cc.Class({
             this.showScorePool(this.allBetNum,1);
         this.gamePlayerNode.curBetNumList[chair] += betNum;
         this.gamePlayerNode.betNumLabelList[chair].string = this.gamePlayerNode.curBetNumList[chair].toString() + "分";
+        if(confige.soundEnable == true)
+            confige.playSoundByName("sendBet");
     },
 
     onBtnReadyClicked:function(){
@@ -1122,8 +1124,11 @@ cc.Class({
         {
             for(var i in data.curScores)
             {
-                if(data.curScores[i] > 0)
+                if(data.curScores[i] > 0){
                     this.gameBGNode.betItemRemove(confige.getCurChair(i),data.curScores[i] + this.gamePlayerNode.curBetNumList[confige.getCurChair(i)]);
+                    if(confige.soundEnable == true)
+                        confige.playSoundByName("getBet");
+                }
             }
             for(var i=0;i<this.gameBGNode.betItemCount;i++)
                 this.gameBGNode.betItemListAll[i].opacity = 0;
@@ -1134,9 +1139,12 @@ cc.Class({
             console.log("this.curBankerChair111==="+this.curBankerChair);
             console.log("this.curBankerChair222==="+confige.getCurChair(this.curBankerChair));
             this.gameBGNode.betItemRemoveToBanker(confige.getCurChair(this.curBankerChair));
-
+            if(confige.soundEnable == true)
+                confige.playSoundByName("getBet");
             var sendBetFunc = function(){
                 this.gameBGNode.betItemSendFromBanker(data.curScores,confige.getCurChair(this.curBankerChair));
+                if(confige.soundEnable == true)
+                    confige.playSoundByName("getBet");
             };
 
             this.scheduleOnce(sendBetFunc,0.25);
@@ -1178,6 +1186,8 @@ cc.Class({
                         var sendBetFunc3 = function(){
                             console.log("confige.getCurChair(i)="+sendBetFunc3.chair+"data.curScores[i]"+sendBetFunc3.score);
                             this.gameBGNode.betItemRemove(sendBetFunc3.chair,sendBetFunc3.score);
+                            if(confige.soundEnable == true)
+                                confige.playSoundByName("getBet");
                         };
                         sendBetFunc3.chair = confige.getCurChair(i);
                         sendBetFunc3.score = data.curScores[i] + this.gamePlayerNode.curBetNumList[confige.getCurChair(i)];
@@ -2134,6 +2144,7 @@ cc.Class({
                         var index = parseInt(l);
                         this.gamePlayerNode.playerHandCardList[curChair].setCardWithIndex(index, data.handCard[index].num, data.handCard[index].type);
                     }
+
                 }
                 break;
             case "compare":
@@ -2723,6 +2734,13 @@ cc.Class({
 
         cc.loader.loadRes("sound/fapai", function (err, audio) {
             confige.audioList["fapai"] = audio;
+        });
+
+        cc.loader.loadRes("sound/new/sendBet",function(err, audio){
+                confige.audioList["sendBet"] = audio;
+        });
+        cc.loader.loadRes("sound/new/getBet",function(err, audio){
+                confige.audioList["getBet"] = audio;
         });
     },
 });

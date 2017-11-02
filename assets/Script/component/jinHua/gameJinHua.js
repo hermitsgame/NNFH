@@ -1562,7 +1562,32 @@ cc.Class({
                         var index = parseInt(l);
                         this.gamePlayerNode.playerHandCardList[curChair].setCardWithIndex(index, data.handCard[index].num, data.handCard[index].type);
                     }
+
+                    if(confige.soundEnable == true)
+                    {
+                        var callFunc = function(){
+                            var curSex = 0;
+                            if(confige.roomPlayer[data.chair].playerInfo)
+                                curSex = parseInt(confige.roomPlayer[data.chair].playerInfo.sex);
+                            var type = ZhaJinHuaLogic.getType(data.handCard).type;
+                            console.log("zhajinhua 123123123123 type@@@@===",ZhaJinHuaLogic.getType(data.handCard).type)
+                            console.log(confige.audioList);
+                            if(gameData.gameMainScene.isJinHua)
+                            {
+                                console.log("3123123123");
+                                console.log("type ====== "+ type);
+                                if(curSex == 2)
+                                {
+                                    confige.playSoundByName("female_jinhua_type_"+type);
+                                }else{
+                                    confige.playSoundByName("male_jinhua_type_"+type);
+                                }
+                            }
+                        }
+                        this.scheduleOnce(callFunc,0.75);
+                    }
                 }
+                    
                 break;
             case "compare":
                 var fromChair = confige.getCurChair(data.chair);
@@ -2005,6 +2030,23 @@ cc.Class({
             cc.loader.loadRes("sound/1/type" + i,function(index){
                 return  function (err, audio) {
                     var curIndex = "male_" + "type_" + index;
+                    confige.audioList[curIndex] = audio;
+                }
+            }(i));
+        }
+
+        for(var i=0;i<=5;i++)
+        {
+            cc.loader.loadRes("sound/jinhua/f" + i,function(index){
+                return  function (err, audio) {
+                    var curIndex = "female_" + "jinhua_type_" + index;
+                    confige.audioList[curIndex] = audio;
+                }
+            }(i));
+
+            cc.loader.loadRes("sound/jinhua/m" + i,function(index){
+                return  function (err, audio) {
+                    var curIndex = "male_" + "jinhua_type_" + index;
                     confige.audioList[curIndex] = audio;
                 }
             }(i));

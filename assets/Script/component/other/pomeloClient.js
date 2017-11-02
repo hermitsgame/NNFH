@@ -479,6 +479,7 @@ pomelo.clientSend = function(code,msg,cbTrue,cbFalse) {
                 console.log(data);
                 if(code == "join")
                 {
+                    pomelo.clientScene.hideReturnRoom();
                     console.log("join room ???")
                     if(data.msg && data.msg.code)
                     {
@@ -656,9 +657,8 @@ pomelo.goldQuite = function() {
 //         });
 //     });
 // };
-// confige.host = "39.108.139.132"; //测试外网2
-// confige.host = "update.5d8d.com";    //测试外网
-confige.host = "nnapi.5d8d.com";     //运营外网
+
+confige.host = "fhgame.5d8d.com";     //运营外网
 // confige.host = "192.168.1.65";          //内网
 pomelo.clientLogin = function(uid,clientLogintoken) {
     console.log("pomelo try to login!!!!!!");

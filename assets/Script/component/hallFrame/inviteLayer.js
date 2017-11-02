@@ -51,7 +51,7 @@ cc.Class({
         };
 
         this.scheduleOnce(function() {
-            var url = "http://pay.5d8d.com/niu_admin.php/Api/setUserAgent?";
+            var url = "http://jx.yechenggame.com/admin.php/Api/setUserAgent?";
             // confige.userInfo.playerId = 10005;
             // curInviteNum = 10002;
             url = url + "game_uid=" + confige.userInfo.playerId + "&invite_code=" + curInviteNum;

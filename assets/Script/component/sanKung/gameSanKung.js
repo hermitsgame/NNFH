@@ -346,6 +346,8 @@ cc.Class({
             this.showScorePool(this.allBetNum,1);
         this.gamePlayerNode.curBetNumList[chair] += betNum;
         this.gamePlayerNode.betNumLabelList[chair].string = this.gamePlayerNode.curBetNumList[chair].toString() + "分";
+        if(confige.soundEnable == true)
+            confige.playSoundByName("sendBet");
     },
 
     onBtnReadyClicked:function(){
@@ -706,9 +708,12 @@ cc.Class({
             console.log("this.curBankerChair111==="+this.curBankerChair);
             console.log("this.curBankerChair222==="+confige.getCurChair(this.curBankerChair));
             this.gameBGNode.betItemRemoveToBanker(confige.getCurChair(this.curBankerChair));
-
+            if(confige.soundEnable == true)
+                confige.playSoundByName("getBet");
             var sendBetFunc = function(){
                 this.gameBGNode.betItemSendFromBanker(data.curScores,confige.getCurChair(this.curBankerChair));
+                if(confige.soundEnable == true)
+                    confige.playSoundByName("getBet");
             };
 
             this.scheduleOnce(sendBetFunc,0.25);
@@ -1275,8 +1280,32 @@ cc.Class({
             }(i));
         }
 
+        for(var i=0;i<=12;i++)
+        {
+            cc.loader.loadRes("sound/sankuang/f" + i,function(index){
+                return  function (err, audio) {
+                    var curIndex = "female_" + "sankuang_type_" + index;
+                    confige.audioList[curIndex] = audio;
+                }
+            }(i));
+
+            cc.loader.loadRes("sound/sankuang/m" + i,function(index){
+                return  function (err, audio) {
+                    var curIndex = "male_" + "sankuang_type_" + index;
+                    confige.audioList[curIndex] = audio;
+                }
+            }(i));
+        }
+
         cc.loader.loadRes("sound/fapai", function (err, audio) {
             confige.audioList["fapai"] = audio;
+        });
+
+        cc.loader.loadRes("sound/new/sendBet",function(err, audio){
+                confige.audioList["sendBet"] = audio;
+        });
+        cc.loader.loadRes("sound/new/getBet",function(err, audio){
+                confige.audioList["getBet"] = audio;
         });
     },
 });

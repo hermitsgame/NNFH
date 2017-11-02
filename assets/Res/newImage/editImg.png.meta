@@ -1,14 +1,14 @@
 {
   "ver": "1.0.0",
-  "uuid": "fd0820fb-0b6f-48b7-b3ba-bc28d1aa7eab",
+  "uuid": "90820436-c153-4b87-b25a-7e812e3cd2fe",
   "type": "sprite",
   "wrapMode": "clamp",
   "filterMode": "bilinear",
   "subMetas": {
-    "loginBgBig": {
+    "editImg": {
       "ver": "1.0.3",
-      "uuid": "726e814a-6140-46fc-96ba-e3b43ea03b1f",
-      "rawTextureUuid": "fd0820fb-0b6f-48b7-b3ba-bc28d1aa7eab",
+      "uuid": "f46e75ed-a3ac-41a8-8e87-69c31795e8de",
+      "rawTextureUuid": "90820436-c153-4b87-b25a-7e812e3cd2fe",
       "trimType": "auto",
       "trimThreshold": 1,
       "rotated": false,
@@ -16,10 +16,10 @@
       "offsetY": 0,
       "trimX": 0,
       "trimY": 0,
-      "width": 1920,
-      "height": 1080,
-      "rawWidth": 1920,
-      "rawHeight": 1080,
+      "width": 34,
+      "height": 34,
+      "rawWidth": 34,
+      "rawHeight": 34,
       "borderTop": 0,
       "borderBottom": 0,
       "borderLeft": 0,

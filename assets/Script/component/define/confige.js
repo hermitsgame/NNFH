@@ -103,8 +103,8 @@ var cfg = {
 };
 
 
-cfg.curVersion = "1.4.06";
-cfg.oriPaomaText = "和谐游戏，拒绝赌博，如若发现，封号并提交公安机关处理。有事咨询客服，客服微信号：YCYX1818";
+cfg.curVersion = "1.0.1";
+cfg.oriPaomaText = "和谐游戏，拒绝赌博，如若发现，封号并提交公安机关处理。有事咨询客服，客服微信号：A79299909";
 cfg.versionCheck = "1.4.01&LSKAHDUYAPSMHAKSSA";
 cfg.resetGameData = function(){
   cfg.gameSceneLoadData = [];
@@ -139,8 +139,8 @@ cfg.h5ShareUrl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxd7
 // cfg.code_url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf0e81c3bee622d60&redirect_uri=http%3A%2F%2Fnba.bluewebgame.com%2Foauth_response.php&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect ";
 cfg.access_token_url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code";
 cfg.refresh_token_url = "https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=APPID&grant_type=refresh_token&refresh_token=REFRESH_TOKEN";
-cfg.APP_ID = "wxdddfd25ee2f85f5d";
-cfg.SECRET = "b81ac4bd43c1662c62b3e5abe89a0ef0";
+cfg.APP_ID = "wx89ce51a5b516d1fd";
+cfg.SECRET = "74439759eed36e0ee77ca0bf4c135398";
 cfg.WX_CODE = "";
 cfg.WX_ACCESS_TOKEN = "";
 cfg.WX_OPEN_ID = "";
@@ -152,10 +152,10 @@ cfg.meWXHeadFrame = -1;
 cfg.WXHeadFrameList = {};
 
 //
-cfg.payURL = "http://pay.5d8d.com/index.php/Tips/showpay";
-cfg.shareURL = "http://d.5d8d.com/index.php/Download/niuniu2"; //"http://game.37yiyou.cn/download/nngame/download.html?from=groupmessage";
-cfg.shareTitle = "我爱牛牛,点击可玩,无需下载";
-cfg.shareDes = "我爱牛牛H5,安全无挂,放心畅玩!";
+cfg.payURL = "http://jx.yechenggame.com/index.php/tips/showpay";
+cfg.shareURL = "http://jx.yechenggame.com/index.php/Download/nn";
+cfg.shareTitle = "凤凰手游牛牛,点击可玩,无需下载";
+cfg.shareDes = "凤凰手游牛牛H5,安全无挂,放心畅玩!";
 //
 cfg.playSoundByName = function(curName){
   if(cfg.audioList[curName])
@@ -194,8 +194,8 @@ cfg.CallGVoicePoll = function(){
 cfg.GVoiceCall = {
   init : function(openID){
     if(cfg.GVoiceIsInit == false){
-        var appid = "1065028827";
-        var appkey = "93242afbf1258ddd2a8d5a766285268d";
+        var appid = "1664310387";
+        var appkey = "5615341544b797ea39feecd758761ca7";
         var openid = openID;
         if(cfg.curUsePlatform == 1){
           jsb.reflection.callStaticMethod("org/cocos2dx/javascript/JSCallJAVA", "GVoiceInit", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V", appid, appkey, openid);

@@ -301,8 +301,22 @@ cc.Class({
         if(confige.roomPlayer[confige.getOriChair(chair)].playerInfo)
             curSex = parseInt(confige.roomPlayer[confige.getOriChair(chair)].playerInfo.sex);
 
-        if(gameData.gameMainScene.isSanKung || gameData.gameMainScene.isJinHua)
+        if(gameData.gameMainScene.isSanKung || gameData.gameMainScene.isJinHua){
+            if(gameData.gameMainScene.isSanKung)
+            {
+                if(confige.soundEnable == true)
+                {
+                    if(curSex == 2)
+                    {
+                        confige.playSoundByName("female_sankuang_type_"+type);
+                    }else{
+                        confige.playSoundByName("male_sankuang_type_"+type);
+                    }
+                }
+            }
             return;
+        }
+        
         if(confige.soundEnable == true)
         {
             if(gameData.gameMainScene.isFengKuang)

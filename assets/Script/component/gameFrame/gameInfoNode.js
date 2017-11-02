@@ -45,6 +45,8 @@ cc.Class({
         this.roomTimeNode = this.roomInfo.getChildByName("nowTime");
         
         this.roomID.string = "房间号:" + confige.roomData.roomId;
+        cc.sys.localStorage.setItem('lastRoomID',confige.roomData.roomId);
+        cc.sys.localStorage.setItem('lastRoomTime',Date.parse(new Date()));
         if(confige.roomData.gameMode == 1)
             this.roomMode.string = "普通牛牛";
         if(confige.roomData.gameMode == 2)
@@ -1063,7 +1065,7 @@ cc.Class({
         };
 
         this.scheduleOnce(function() {
-            var url = "http://pay.5d8d.com/niu_admin.php/Api/getInviteCode?game_uid="+confige.userInfo.playerId;
+            var url = "http://jx.yechenggame.com/admin.php/Api/getInviteCode?game_uid="+confige.userInfo.playerId;
             console.log("url====="+ url);
             xmlHttp.onreadystatechange = httpCallback;
             xmlHttp.open("GET", url, true);// 异步处理返回   

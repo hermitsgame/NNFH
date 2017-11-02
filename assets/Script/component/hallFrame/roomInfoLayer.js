@@ -35,6 +35,7 @@ cc.Class({
         this.roomInfoItemList1 = [];
         this.roomInfoItemList2 = [];
         this.roomInfoData = {};
+
         this.isInit = true;
     },
 
@@ -55,7 +56,7 @@ cc.Class({
                     self.roomInfoItemList1[roomInfoItemCount] = newRoomInfoItem;
                     self.roomInfoLayerContent1.addChild(newRoomInfoItem);
                     newRoomInfoItem.x = self.roomInfoItemBeginX + self.roomInfoItemOffsetX * roomInfoItemCount;
-
+                    newRoomInfoItem.y = 35;
                     var roomState1 = newRoomInfoItem.getChildByName("onFree");
                     var roomState2 = newRoomInfoItem.getChildByName("onGame");
                     var roomIDLabel = newRoomInfoItem.getChildByName("roomID").getComponent("cc.Label");
@@ -65,6 +66,12 @@ cc.Class({
                     var roomBtnJoin = newRoomInfoItem.getChildByName("btnJoin").getComponent("cc.Button");
                     var roomBtnInvite = newRoomInfoItem.getChildByName("btnInvite").getComponent("cc.Button");
                     var roomBtnClose = newRoomInfoItem.getChildByName("btnClose").getComponent("cc.Button");
+                    var roomTimesEdit = newRoomInfoItem.getComponent("roomInfoItem");
+                    roomTimesEdit.parent = self;
+                    roomTimesEdit.itemIndex = i;
+                    if(curRoomInfo.agencyReopenInfo)
+                        roomTimesEdit.setEdit(curRoomInfo.agencyReopenInfo.count);
+
                     newRoomInfoItem.id = curRoomInfo.roomId;
                     roomIDLabel.string = "房间号:"+curRoomInfo.roomId;
                     var curRoomDes = curRoomInfo.gameNumber + "局--";
@@ -259,12 +266,12 @@ cc.Class({
             console.log(curDate);
             roomDateLabel.string = curDate.getFullYear()+"-"+(parseInt(curDate.getMonth())+1)+"-"+curDate.getDate()+"    "+curDate.getHours()+":"+curDate.getMinutes()+":"+curDate.getSeconds();
             var curPlayerNode = newRoomInfoItem.getChildByName("playerNode");
-            for(var k in curRoomInfo.players)
+            for(var k in curRoomInfo.player)
             {
                 var curPlayerNodeName = curPlayerNode.getChildByName("player"+(parseInt(k)));
                 curPlayerNodeName.active = true;
-                curPlayerNodeName.getChildByName("name").getComponent("cc.Label").string = curRoomInfo.players[k].nickname;
-                curPlayerNodeName.getChildByName("id").getComponent("cc.Label").string = "ID:"+curRoomInfo.players[k].uid;
+                curPlayerNodeName.getChildByName("name").getComponent("cc.Label").string = curRoomInfo.player[k].name;
+                curPlayerNodeName.getChildByName("id").getComponent("cc.Label").string = "ID:"+curRoomInfo.player[k].uid;
                 var curScoreLabel = curPlayerNodeName.getChildByName("score").getComponent("cc.Label");
                 curScoreLabel.string = "";
                 if(curRoomInfo.player)
@@ -491,6 +498,26 @@ cc.Class({
         };
         pomelo.clientSend("join",{"roomId":roomId}, joinCallFunc);
         console.log("join room" + roomId);
+    },
+
+    roomTimeEditEnd:function(index,number){
+        console.log("roomTimesEditEnd @@@@@@");
+        console.log("index === "+index+"   number === "+number);
+        console.log(this.roomInfoData[index]);
+
+        var self = this;
+        pomelo.request("connector.entryHandler.changeAgencyReopenCount", {"roomId":this.roomInfoData[index].roomId,"count":number},function(data) {
+                console.log(data)
+                if(data == true)
+                    console.log("设置成功@@@@@");
+                else{
+                    console.log("设置失败@@@@@");
+
+                    self.parent.showTips("操作失败,请重试");
+                    self.hideRoomInfoLayer1();
+                }
+            }
+        );
     },
 
     showLayer:function(){

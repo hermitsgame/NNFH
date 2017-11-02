@@ -133,6 +133,30 @@ cc.Class({
         this.shareLayerLoad = false;
         this.giftLayerLoad = false;
         this.roomInfoLayerLoad = false;
+
+        if(cc.sys.localStorage.getItem('lastRoomID') == null)
+        {
+            cc.sys.localStorage.setItem('lastRoomID',0);
+        }else{
+            var curLastRoomID = cc.sys.localStorage.getItem('lastRoomID');
+            if(curLastRoomID != 0)
+            {
+                var curLastRoomTime = cc.sys.localStorage.getItem('lastRoomTime');
+                console.log("curLastRoomID======"+curLastRoomID);
+                if(curLastRoomTime != null)
+                {   
+                    console.log("curLastRoomTime ===== "+curLastRoomTime);
+                    var newTime = Date.parse(new Date());
+                    console.log("newTime - curLastRoomTime===="+(newTime - curLastRoomTime));
+                    if(newTime - curLastRoomTime > 3600000)
+                    {
+                        cc.sys.localStorage.setItem('lastRoomID',0);
+                    }else{
+                        this.topNode.getChildByName("btnReturnRoom").active = true;
+                    }
+                }
+            }
+        }
     },
     
     start:function(){
@@ -538,7 +562,7 @@ cc.Class({
         };
 
         this.scheduleOnce(function() {
-            var url = "http://pay.5d8d.com/niu_admin.php/Api/checkAgent?";
+            var url = "http://jx.yechenggame.com/admin.php/Api/checkAgent?";
             url = url + "game_uid=" + confige.userInfo.playerId;
             // var md5String = ("game_uid=" + confige.userInfo.playerId + "&key=niuniuyiyousecretkey");
             // var data = {
@@ -579,7 +603,7 @@ cc.Class({
         };
 
         this.scheduleOnce(function() {
-            var url = "http://pay.5d8d.com/niu_admin.php/Api/getInviteCode?game_uid="+confige.userInfo.playerId;
+            var url = "http://jx.yechenggame.com/admin.php/Api/getInviteCode?game_uid="+confige.userInfo.playerId;
             console.log("url====="+ url);
             xmlHttp.onreadystatechange = httpCallback;
             xmlHttp.open("GET", url, true);// 异步处理返回   
@@ -677,5 +701,21 @@ cc.Class({
             cancel: function(res) {},
             fail: function(res) {}
         });
+    },
+
+    btnReturnRoomClick:function(){
+        var curLastRoomID = cc.sys.localStorage.getItem('lastRoomID');
+        var joinCallFunc = function(){
+            console.log("onBtnJoinRoom joinCallFunc!!!!!");
+            this.loadingLayer.showLoading();
+        };
+        console.log("fuck roomId");
+        console.log(curLastRoomID)
+        pomelo.clientSend("join",{"roomId":parseInt(curLastRoomID)}, joinCallFunc);
+    },
+
+    hideReturnRoom:function(){
+        cc.sys.localStorage.setItem('lastRoomID',0);
+        this.topNode.getChildByName("btnReturnRoom").active = false;
     },
 });
