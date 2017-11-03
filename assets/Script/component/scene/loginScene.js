@@ -165,9 +165,9 @@ cc.Class({
         this.updateLayer = this.node.getChildByName("updateLayer").getComponent("HotUpdate");
         this.updateLayer.onInit();
 
-        // if (cc.sys.isNative) {
-        //     this.updateLayer.checkUpdate();
-        // }
+        if (cc.sys.isNative) {
+            this.updateLayer.checkUpdate();
+        }
     },
     
     start: function () {
