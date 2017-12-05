@@ -3,6 +3,8 @@ var confige = require("confige");
 var FKLogic = require("FengKuangLogic");
 var sanKungLogic = require("sanKungLogic");
 var ZhaJinHuaLogic = require("ZhaJinHuaLogic");
+var SpecialLogic = require("SpecialNiuNiuLogic");
+
 cc.Class({
     extends: cc.Component,
 
@@ -274,8 +276,8 @@ cc.Class({
             return;
         this.niuTypeBoxList[chair].active = true;
         this.niuTypeBoxList[chair].opacity = 0;
-        if(gameData.gameMainScene.isFengKuang)
-            this.niuTypeBoxList[chair].getChildByName("niuImg").getComponent("cc.Sprite").spriteFrame = confige.niuTypeFrameMapFK[type];
+        if(gameData.gameMainScene.isSpecial)
+            this.niuTypeBoxList[chair].getChildByName("niuImg").getComponent("cc.Sprite").spriteFrame = confige.niuTypeFrameMapSpecial[type];
         else if(gameData.gameMainScene.isSanKung)
             this.niuTypeBoxList[chair].getChildByName("niuImg").getComponent("cc.Sprite").spriteFrame = confige.sanKungTypeFrameMap[type];
         else if(gameData.gameMainScene.isJinHua)
@@ -319,7 +321,7 @@ cc.Class({
         
         if(confige.soundEnable == true)
         {
-            if(gameData.gameMainScene.isFengKuang)
+            if(gameData.gameMainScene.isSpecial)
             {
                 var curType = 0;
                 if(type >= 0 && type <= 10)
@@ -327,24 +329,27 @@ cc.Class({
                 else{
                     switch(type){
                         case 11:
-                            curType = 15;
+                            curType = 11;
                             break;
                         case 12:
-                            curType = 16;
+                            curType = 12;
                             break;
                         case 13:
-                            curType = 17;
+                            curType = 15;
                             break;
                         case 14:
-                            curType = 14;
+                            curType = 16;
                             break;
                         case 15:
-                            curType = 12;
+                            curType = 17;
                             break;
                         case 16:
                             curType = 13;
                             break;
                         case 17:
+                            curType = 14;
+                            break;
+                        case 18:
                             curType = 18;
                             break;
                     }
@@ -396,8 +401,8 @@ cc.Class({
         if(curCardNum == 5)
         {
             var curNiuType = 0;
-            if(gameData.gameMainScene.isFengKuang)
-                curNiuType = FKLogic.getType(handCard);
+            if(gameData.gameMainScene.isSpecial)
+                curNiuType = SpecialLogic.getType(handCard);
             else
                 curNiuType = confige.getNiuType(handCard);
             this.showNiuType(curChair, curNiuType.type);

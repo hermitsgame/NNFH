@@ -51,6 +51,10 @@ cc.Class({
             {
                 var roomId = parseInt(this.joinRoomID);
                 pomelo.clientSend("join",{"roomId":roomId});
+                // pomelo.request("connector.entryHandler.sendData",{"code" : "getRoomInfo","params" : {"roomId" : roomId}}, function(data) {
+                //     console.log("getRoomInfo@@@@@@@@@@@@@@@@@");
+                //     console.log(data);
+                // });        
             }
         }
         else if(index == 10){

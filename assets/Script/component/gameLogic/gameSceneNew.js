@@ -1,6 +1,8 @@
 var gameData = require("gameData");
 var confige = require("confige");
 var FKLogic = require("FengKuangLogic");
+var SpecialLogic = require("SpecialNiuNiuLogic");
+
 cc.Class({
     extends: cc.Component,
 
@@ -130,6 +132,10 @@ cc.Class({
             this.isFengKuang = true;
         }
 
+        this.isSpecial = false;
+        if(confige.specialType == true)
+            this.isSpecial = true;
+
         this.joinState = confige.roomData.state;
         this.gameBegin = false;     //本房间游戏开始
         this.gameStart = false;     //当前局游戏开始
@@ -217,7 +223,7 @@ cc.Class({
 
     startLater: function () {
         this.gamePlayerNode.onStart();
-        
+
         if(this.isZhajinniu == true)
         {
             this.initZhajinniuLayer();
@@ -504,7 +510,7 @@ cc.Class({
         this.curBankerChair = chair;
     },
 
-    showScorePool:function(score,type,bankerScore,change){
+    showScorePool:function(score,change){
         console.log("show fuck score pool!!!!!!");
         if(this.isMingCardQZ)
         {
@@ -515,12 +521,6 @@ cc.Class({
         this.gameBGNode.scorePoolLabel.string = score + ";<";
         this.gameBGNode.scorePoolNum = parseInt(score);
 
-        if(bankerScore)
-        {
-            console.log("curChair === " + this.curBankerChair + "newChiar===" + confige.getCurChair(this.curBankerChair));
-            this.gamePlayerNode.playerScoreList[this.curBankerChair] = bankerScore;
-            this.gamePlayerNode.playerInfoList[confige.getCurChair(this.curBankerChair)].setScore(this.gamePlayerNode.playerScoreList[this.curBankerChair]);
-        }
         if(change === true)
         {
             // this.gameBGNode.betItemRemoveToBanker(confige.getCurChair(this.curBankerChair));
@@ -530,6 +530,41 @@ cc.Class({
                 this.gameBGNode.betItemListAddBet(confige.getCurChair(this.curBankerChair),callFunc.score);
             };
             callFunc.score = score;
+            this.scheduleOnce(callFunc,1);
+        }
+    },
+
+    showScorePoolServer:function(curData){
+        console.log("show fuck score pool!!!!!!");
+        if(this.isMingCardQZ)
+        {
+            this.robBetNumLabel.string = curData.bonusPool;
+            return;
+        }
+        this.gameBGNode.scorePool.active = true;
+        this.gameBGNode.scorePoolLabel.string = curData.bonusPool + ";<";
+        this.gameBGNode.scorePoolNum = parseInt(curData.bonusPool);
+
+        if(curData.banker != null)
+        {
+            console.log("curChair === " + this.curBankerChair + "newChiar===" + confige.getCurChair(curData.banker));
+            this.gamePlayerNode.playerScoreList[curData.banker] = curData.bankerScore;
+            this.gamePlayerNode.playerInfoList[confige.getCurChair(curData.banker)].setScore(this.gamePlayerNode.playerScoreList[curData.banker]);
+        }
+        if(curData.oldBanker != null)
+        {
+            this.gamePlayerNode.playerScoreList[curData.oldBanker] = curData.oldBankerScore;
+            this.gamePlayerNode.playerInfoList[confige.getCurChair(curData.oldBanker)].setScore(this.gamePlayerNode.playerScoreList[curData.oldBanker]);
+        }
+        if(curData.change === true)
+        {
+            // this.gameBGNode.betItemRemoveToBanker(confige.getCurChair(this.curBankerChair));
+            var callFunc = function(){
+                this.gameBGNode.betItemListClean();
+                console.log("fuck you scorePool 丢钱出去！！！！！！！！！！！！！！")
+                this.gameBGNode.betItemListAddBet(confige.getCurChair(this.curBankerChair),callFunc.bonusPool);
+            };
+            callFunc.bonusPool = curData.bonusPool;
             this.scheduleOnce(callFunc,1);
         }
     },
@@ -557,14 +592,14 @@ cc.Class({
             this.allBetNum += betNum;
             this.gamePlayerNode.curBetNumList[chair] += betNum;
             this.gamePlayerNode.betNumLabelList[chair].string = this.gamePlayerNode.curBetNumList[chair].toString() + "分";
-            this.showScorePool(this.allBetNum,1);
+            this.showScorePool(this.allBetNum);
             return;
         }
         this.allBetNum = this.allBetNum + betNum;
         if(chair == 0)
             this.myBetNum = this.myBetNum + betNum;
         if(this.gameMode != 3)
-            this.showScorePool(this.allBetNum,1);
+            this.showScorePool(this.allBetNum);
         this.gamePlayerNode.curBetNumList[chair] += betNum;
         this.gamePlayerNode.betNumLabelList[chair].string = this.gamePlayerNode.curBetNumList[chair].toString() + "分";
         if(confige.soundEnable == true)
@@ -637,7 +672,7 @@ cc.Class({
         {
             if(this.gameMode == 3)          //斗公牛模式特殊处理
             {
-                curBetNum = Math.min(Math.floor(this.gameBGNode.scorePoolNum/(this.gamePlayerNode.playerCount-1)), 40) - this.myBetNum;
+                curBetNum = Math.min(Math.floor((this.gameBGNode.scorePoolNum/((this.gamePlayerNode.playerCount-1)*2))*1.5), 40) - this.myBetNum;
                 console.log("new curBetNum ===== " + curBetNum);
             }else{
                 curBetNum = 4;
@@ -676,10 +711,12 @@ cc.Class({
 
     downBanker:function(data){
         this.popBanker.active = false;
-        if(this.gameMode == 3)
+        if(this.gameMode == 3){
             this.gameBGNode.betItemRemoveToBanker(confige.getCurChair(data.chair));
+            this.showScorePool(data.bonusPool);
+        }
         else
-            this.showScorePool(data.bonusPool,0);
+            this.showScorePool(data.bonusPool);
             // this.showScorePool(data.bonusPool,0,false,true);
         this.gamePlayerNode.playerList[confige.getCurChair(data.chair)].getChildByName("banker").active = false;
         this.gamePlayerNode.lightBgList[confige.getCurChair(data.chair)].active = false;
@@ -888,10 +925,17 @@ cc.Class({
                 {
                     console.log("this.scorePoolNum==="+this.gameBGNode.scorePoolNum);
                     console.log("this.playerCount==="+this.gamePlayerNode.playerCount);
-                    var curMin = Math.max(Math.floor(this.gameBGNode.scorePoolNum / this.gamePlayerNode.playerCount / 5), 1);// - this.myBetNum;
-                    if(curMin > 40)
-                        curMin = 40;
-                    var curMax = Math.min(Math.floor(this.gameBGNode.scorePoolNum/(this.gamePlayerNode.playerCount-1)), 40); - this.myBetNum;
+                    // var curMin = Math.max(Math.floor(this.gameBGNode.scorePoolNum / this.gamePlayerNode.playerCount / 5), 1);// - this.myBetNum;
+                    // var curMin = Math.max(Math.floor(this.gameBGNode.scorePoolNum / this.gamePlayerNode.playerCount / 5), 1);
+                    // if(curMin > 40)
+                    //     curMin = 40;
+                    // var curMax = Math.min(Math.floor(this.gameBGNode.scorePoolNum/(this.gamePlayerNode.playerCount-1)), 40); - this.myBetNum;
+                    var curMax = Math.min(Math.floor((this.gameBGNode.scorePoolNum/((confige.playerMax-1)*2))*1.5), 40);
+                    var curMin = Math.min(Math.floor(curMax/5), 40);
+                    if(curMin < 1)
+                        curMin = 1;
+                    if(curMax < 1)
+                        curMax = 1;
                     console.log("curMax ===== " + curMax);
                     this.showSlider(curMin,curMax);
                 }
@@ -1021,9 +1065,9 @@ cc.Class({
 
         var handCard = this.gamePlayerNode.playerCardList[this.meChair];
         var curNiuType = 0;
-        if(this.isFengKuang){
-            curNiuType = FKLogic.getType(handCard);
-            console.log("this.isFengKuang+++++"+curNiuType);
+        if(this.isSpecial){
+            curNiuType = SpecialLogic.getType(handCard);
+            console.log("this.isSpecial+++++"+curNiuType);
             console.log(handCard);
         }
         else
@@ -1235,7 +1279,7 @@ cc.Class({
                             }
                         }
                     }
-                    if(self.isFengKuang)
+                    if(self.isSpecial)
                         self.gameInfoNode.settleLayer.addOneSettle(confige.roomData.player[i].playerInfo.nickname, niuType, data.curScores[i],1,data.player[i].handCard,i);
                     else
                         self.gameInfoNode.settleLayer.addOneSettle(confige.roomData.player[i].playerInfo.nickname, niuType, data.curScores[i],0,data.player[i].handCard,i);
@@ -1307,6 +1351,13 @@ cc.Class({
     //根据重连数据重现游戏状态
     recoverGame:function(){
         this.onReConnect = true;
+        if(confige.curReconnectData.state == 1100){
+            gameData.gameInfoNode.btn_continue.active = true;
+            this.readyBtn.active = false;
+            this.gameInfoNode.btn_inviteFriend.active = false;
+            this.basicNode.active = false;
+            return;
+        }
         console.log("处理重连数据");
         console.log("当前参与游戏的人数===" + this.gamePlayerNode.playerCount);
         var watchPlayer = 0;
@@ -1355,7 +1406,10 @@ cc.Class({
                 }
                 if(confige.curReconnectData.betList[i] == null)
                     confige.curReconnectData.betList[i] = 0;
-                this.gamePlayerNode.playerScoreList[i] = confige.curReconnectData.roomInfo.player[i].score - confige.curReconnectData.betList[i];
+                if(this.gameMode == 3)
+                    this.gamePlayerNode.playerScoreList[i] = confige.curReconnectData.roomInfo.player[i].score;
+                else
+                    this.gamePlayerNode.playerScoreList[i] = confige.curReconnectData.roomInfo.player[i].score;
                 // if(this.isZhajinniu)
                     // this.playerScoreList[i] -= this.zhajinniuBasic;
                 this.gamePlayerNode.playerInfoList[confige.getCurChair(i)].setScore(this.gamePlayerNode.playerScoreList[i]);
@@ -1441,12 +1495,14 @@ cc.Class({
                     {
                         if(this.gameMode == 3)
                         {
-                            var curMin = Math.max(Math.floor(confige.curReconnectData.bonusPool / this.gamePlayerNode.playerCount / 5), 1);// - this.myBetNum;
-                            if(curMin > 40)
-                                curMin = 40;
-                            var curMax = Math.min(Math.floor(confige.curReconnectData.bonusPool/(this.gamePlayerNode.playerCount-1)), 40); - this.myBetNum;
-                            console.log("curMax ===== " + curMax);
-                            this.showSlider(curMin,curMax);
+                            var curMax = Math.min(Math.floor((confige.curReconnectData.bonusPool/((confige.playerMax-1)*2))*1.5), 40);
+                            var curMin = Math.min(Math.floor(curMax/5), 40);
+                            if(curMin < 1)
+                                curMin = 1;
+                            if(curMax < 1)
+                                curMax = 1;
+                            if(confige.curReconnectData.betList[this.meChair] == 0)
+                                this.showSlider(curMin,curMax);
                         }else{
                             this.betBtnBox.active = true;
                         }
@@ -1501,9 +1557,9 @@ cc.Class({
         if(this.gameMode == 3)          //斗公牛模式
         {
             if(this.onReConnect == true)
-                this.showScorePool(confige.curReconnectData.bonusPool,0,false,true);
+                this.showScorePool(confige.curReconnectData.bonusPool,true);
             else
-                this.showScorePool(confige.curReconnectData.bonusPool,0);
+                this.showScorePool(confige.curReconnectData.bonusPool);
 
         }else if(this.gameMode == 4){   //开船模式
             var dfsdfsdfsd = 0;
@@ -1642,15 +1698,16 @@ cc.Class({
             var curState = confige.curReconnectData.state;
             if(curState != 1005 && curState != 1001)
             {
-                var robStateList = confige.curReconnectData.roomInfo.robState;
-                for(var i in robStateList)
-                {
-                    if(robStateList[i] != -1)
-                    {
-                        if(robStateList[i] > this.curRobMaxNum)
-                            this.curRobMaxNum = robStateList[i];
-                    }
-                }
+                // var robStateList = confige.curReconnectData.roomInfo.robState;
+                // for(var i in robStateList)
+                // {
+                //     if(robStateList[i] != -1)
+                //     {
+                //         if(robStateList[i] > this.curRobMaxNum)
+                //             this.curRobMaxNum = robStateList[i];
+                //     }
+                // }
+                this.curRobMaxNum = confige.curReconnectData.roomInfo.maxRob;
                 if(this.curRobMaxNum == 0)
                     this.curRobMaxNum = 1;
                 this.robMaxNumNode.active = true;
@@ -2198,6 +2255,49 @@ cc.Class({
     },
 
     onNewGameStart:function(){
+        if(this.gameInfoNode.settleLayerLoad != -1 && this.gameInfoNode.settleLayer.onShow == true){
+            this.gameInfoNode.settleLayer.hideNoClick();
+            if(this.isZhajinniu)
+            {
+                for(var i=0;i<confige.playerMax;i++)
+                {
+                    this.lookCardList[i] = false;
+                    this.giveUpList[i] = false;
+                    this.loseList[i] = false;
+                    this.loseNodeList[i].active = false;
+                    this.gamePlayerNode.watchCardImgList[i].active = false;
+                    this.gamePlayerNode.failureImgList[i].active = false;
+                    this.gamePlayerNode.discardImgList[i].active = false;
+                }
+            }
+            this.showCardBtn.active = false;
+            if(this.gameMode != 3)
+                this.gameBGNode.betItemListClean();
+            if(confige.roomData.gameMode != 3)
+                this.gameBGNode.scorePool.active = false;
+
+            for(var i in confige.roomPlayer)
+            {
+                if(confige.roomPlayer[i].isActive == true)
+                {   
+                    var curChair = confige.getCurChair(i);
+                    this.gamePlayerNode.playerHandCardList[curChair].resetCard();
+                    this.gamePlayerNode.niuTypeBoxList[curChair].active = false;
+                    this.gamePlayerNode.playerList[curChair].getChildByName("banker").active = false;
+                    this.gamePlayerNode.betNumNodeList[curChair].active = false;
+                    this.gamePlayerNode.betNumLabelList[curChair].string = "0" + "分";
+                    this.gamePlayerNode.curBetNumList[curChair] = 0;
+                    this.gamePlayerNode.lightBgList[curChair].active = false;
+                    this.gamePlayerNode.isRobImgList[curChair].active = false;
+                    this.gamePlayerNode.noRobImgList[curChair].active = false;
+                    this.gamePlayerNode.robNumNodeList[curChair].active = false;
+                }
+            }
+        }
+        if(confige.roomPlayer[this.meChair].isReady == false)
+            this.joinLate = true;
+        this.readyBtn.active = false;
+
         for(var i in confige.roomPlayer)
         {
             if(confige.roomPlayer[i].isActive == true)
@@ -2480,7 +2580,7 @@ cc.Class({
                 this.robBetBtnBox.getChildByName("bet4").x = 225;
                 break;
             case 5:
-                this.mpqzBetNum1 = 2;
+                this.mpqzBetNum1 = 2; 
                 this.mpqzBetNum2 = 4;
                 this.mpqzBetNum3 = 6;
                 this.robBetBtnBox.getChildByName("bet3").active = true;
@@ -2500,6 +2600,12 @@ cc.Class({
 
         this.robBetNumNode = this.robMaxNumNode.getChildByName("curBet");
         this.robBetNumLabel = this.robBetNumNode.getChildByName("robBetNum").getComponent("cc.Label");
+
+        this.basicNode = this.gameBGNode.mainBg.getChildByName("basic");
+        this.basicNumLabel = this.basicNode.getChildByName("basicNum").getComponent("cc.Label")
+        this.basicNode.active = true;
+        this.basicNumLabel.string = confige.roomData.basic;
+
         if(this.isAllowAllin == false)
         {
             this.robBetBtnBox.getChildByName("bet4").active = false;
@@ -2556,6 +2662,10 @@ cc.Class({
         pomelo.clientSend("say",{"msg": {"sayType":255, "id": voiceID, "time": this.gameInfoNode.sayTime}});
     },
 
+    readyBegin:function(time){
+        this.timerItem.setTime(parseInt(time/1000)); 
+    },
+
     loadRes1:function(){
         var self = this;
         var onLoadNext = false;
@@ -2605,30 +2715,34 @@ cc.Class({
             {
                 var spriteFrame = newNode.getChildByName("niu_"+i).getComponent("cc.Sprite").spriteFrame;
                 confige.niuTypeFrameMap[i] = spriteFrame;
+
                 if(i <= 10){
-                    confige.niuTypeFrameMapFK[i] = spriteFrame;
+                    confige.niuTypeFrameMapSpecial[i] = spriteFrame;
                 }else{
                     switch(i){
+                        case 11:
+                            confige.niuTypeFrameMapSpecial[11] = spriteFrame;
+                            break;
                         case 12:
-                            confige.niuTypeFrameMapFK[15] = spriteFrame;
+                            confige.niuTypeFrameMapSpecial[12] = spriteFrame;
                             break;
                         case 13:
-                            confige.niuTypeFrameMapFK[16] = spriteFrame;
+                            confige.niuTypeFrameMapSpecial[16] = spriteFrame;
                             break;
                         case 14:
-                            confige.niuTypeFrameMapFK[14] = spriteFrame;
+                            confige.niuTypeFrameMapSpecial[17] = spriteFrame;
                             break;
                         case 15:
-                            confige.niuTypeFrameMapFK[11] = spriteFrame;
+                            confige.niuTypeFrameMapSpecial[13] = spriteFrame;
                             break;
                         case 16:
-                            confige.niuTypeFrameMapFK[12] = spriteFrame;
+                            confige.niuTypeFrameMapSpecial[14] = spriteFrame;
                             break;
                         case 17:
-                            confige.niuTypeFrameMapFK[13] = spriteFrame;
+                            confige.niuTypeFrameMapSpecial[15] = spriteFrame;
                             break;
                         case 18:
-                            confige.niuTypeFrameMapFK[17] = spriteFrame;
+                            confige.niuTypeFrameMapSpecial[18] = spriteFrame;
                             break;
                     }
                 }

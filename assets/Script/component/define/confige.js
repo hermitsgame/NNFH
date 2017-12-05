@@ -54,12 +54,14 @@ var cfg = {
   curHistory : {},
   curSex : 1,   //1:M,0:F;
 
+  specialType : false,
 	roomPlayer : -1,
   roomId : -1,
   roomData : -1,
   cardFrameMap : {},
   niuTypeFrameMap : {},
   niuTypeFrameMapFK : {},
+  niuTypeFrameMapSpecial : {},
   sanKungTypeFrameMap : {},
   jinHuaTypeFrameMap : {},
 
@@ -103,7 +105,7 @@ var cfg = {
 };
 
 
-cfg.curVersion = "1.0.1";
+cfg.curVersion = "1.0.5";
 cfg.oriPaomaText = "和谐游戏，拒绝赌博，如若发现，封号并提交公安机关处理。有事咨询客服，客服微信号：A79299909";
 cfg.versionCheck = "1.4.01&LSKAHDUYAPSMHAKSSA";
 cfg.resetGameData = function(){
@@ -128,14 +130,14 @@ cfg.h5SignTicket = "";
 cfg.h5SignSignature = "";
 cfg.h5SignStr = "niuniuH5";
 cfg.h5SignURL = "";
-cfg.h5LoginUrl = "http://pay.5d8d.com/H5Index/nnH5?room_num=0";
-cfg.h5ShareUrlNew = "http://pay.5d8d.com/H5Index/nnH5?room_num=ROOMNUM";
+cfg.h5LoginUrl = "http://pay.5d8d.com/H5Index/nnH5CDN?room_num=0";
+cfg.h5ShareUrlNew = "http://pay.5d8d.com/H5Index/nnH5CDN?room_num=ROOMNUM";
 cfg.h5ShareIco = "http://update.5d8d.com/niuniuH5/MP_ICO.png";
 console.log("分享路径22222===="+cfg.h5ShareUrlNew);
 console.log("完整路径222===="+cfg.h5SignURL + cfg.h5ShareIco);
 //
 cfg.loginType = 0;   //0:游客登陆;1:微信登陆;2:h5微信登录
-cfg.h5ShareUrl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxd72486a200bde1db&redirect_uri=http%3a%2f%2fpay.5d8d.com%2fNN%2fnnH5%3froom_num%3dROOMNUM&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
+cfg.h5ShareUrl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxd72486a200bde1db&redirect_uri=http%3a%2f%2fpay.5d8d.com%2fNN%2fnnH5CDN%3froom_num%3dROOMNUM&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
 // cfg.code_url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf0e81c3bee622d60&redirect_uri=http%3A%2F%2Fnba.bluewebgame.com%2Foauth_response.php&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect ";
 cfg.access_token_url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code";
 cfg.refresh_token_url = "https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=APPID&grant_type=refresh_token&refresh_token=REFRESH_TOKEN";
@@ -194,8 +196,8 @@ cfg.CallGVoicePoll = function(){
 cfg.GVoiceCall = {
   init : function(openID){
     if(cfg.GVoiceIsInit == false){
-        var appid = "1664310387";
-        var appkey = "5615341544b797ea39feecd758761ca7";
+        var appid = "1936925573";
+        var appkey = "ebf5862e6c3a59cd44b4bfef9d285946";
         var openid = openID;
         if(cfg.curUsePlatform == 1){
           jsb.reflection.callStaticMethod("org/cocos2dx/javascript/JSCallJAVA", "GVoiceInit", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V", appid, appkey, openid);

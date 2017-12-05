@@ -796,6 +796,12 @@ cc.Class({
     //根据重连数据重现游戏状态
     recoverGame:function(){
         this.onReConnect = true;
+        if(confige.curReconnectData.state == 1100){
+            gameData.gameInfoNode.btn_continue.active = true;
+            this.readyBtn.active = false;
+            this.gameInfoNode.btn_inviteFriend.active = false;
+            return;
+        }
         console.log("处理重连数据");
         console.log("当前参与游戏的人数===" + this.gamePlayerNode.playerCount);
         var watchPlayer = 0;
@@ -844,7 +850,7 @@ cc.Class({
                 }
                 if(confige.curReconnectData.betList[i] == null)
                     confige.curReconnectData.betList[i] = 0;
-                this.gamePlayerNode.playerScoreList[i] = confige.curReconnectData.roomInfo.player[i].score;// - confige.curReconnectData.betList[i];
+                this.gamePlayerNode.playerScoreList[i] = confige.curReconnectData.roomInfo.player[i].score;
                 this.gamePlayerNode.playerInfoList[confige.getCurChair(i)].setScore(this.gamePlayerNode.playerScoreList[i]);
                 if(confige.curReconnectData.roomInfo.player[i].isBanker == true)
                 {
@@ -1001,6 +1007,49 @@ cc.Class({
     },
 
     onNewGameStart:function(){
+        if(this.gameInfoNode.settleLayerLoad != -1 && this.gameInfoNode.settleLayer.onShow == true){
+            this.gameInfoNode.settleLayer.hideNoClick();
+            if(this.isZhajinniu)
+            {
+                for(var i=0;i<confige.playerMax;i++)
+                {
+                    this.lookCardList[i] = false;
+                    this.giveUpList[i] = false;
+                    this.loseList[i] = false;
+                    this.loseNodeList[i].active = false;
+                    this.gamePlayerNode.watchCardImgList[i].active = false;
+                    this.gamePlayerNode.failureImgList[i].active = false;
+                    this.gamePlayerNode.discardImgList[i].active = false;
+                }
+            }
+            this.showCardBtn.active = false;
+            if(this.gameMode != 3)
+                this.gameBGNode.betItemListClean();
+            if(confige.roomData.gameMode != 3)
+                this.gameBGNode.scorePool.active = false;
+
+            for(var i in confige.roomPlayer)
+            {
+                if(confige.roomPlayer[i].isActive == true)
+                {   
+                    var curChair = confige.getCurChair(i);
+                    this.gamePlayerNode.playerHandCardList[curChair].resetCard();
+                    this.gamePlayerNode.niuTypeBoxList[curChair].active = false;
+                    this.gamePlayerNode.playerList[curChair].getChildByName("banker").active = false;
+                    this.gamePlayerNode.betNumNodeList[curChair].active = false;
+                    this.gamePlayerNode.betNumLabelList[curChair].string = "0" + "分";
+                    this.gamePlayerNode.curBetNumList[curChair] = 0;
+                    this.gamePlayerNode.lightBgList[curChair].active = false;
+                    this.gamePlayerNode.isRobImgList[curChair].active = false;
+                    this.gamePlayerNode.noRobImgList[curChair].active = false;
+                    this.gamePlayerNode.robNumNodeList[curChair].active = false;
+                }
+            }
+        }
+        if(confige.roomPlayer[this.meChair].isReady == false)
+            this.joinLate = true;
+        this.readyBtn.active = false;
+
         for(var i in confige.roomPlayer)
         {
             if(confige.roomPlayer[i].isActive == true)
@@ -1129,6 +1178,10 @@ cc.Class({
 
     sayWithID:function(voiceID){
         pomelo.clientSend("say",{"msg": {"sayType":255, "id": voiceID, "time": this.gameInfoNode.sayTime}});
+    },
+
+    readyBegin:function(time){
+        this.timerItem.setTime(parseInt(time/1000)); 
     },
 
     loadRes1:function(){

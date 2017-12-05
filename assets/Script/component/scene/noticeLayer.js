@@ -30,6 +30,10 @@ cc.Class({
         this.oriNoticePosy = 130;
         this.oriNoticePosOffset = -50;
         this.hasNotice = false;
+
+        this.testContent = this.node.getChildByName("testView").getChildByName("view").getChildByName("content");
+        this.testNode = this.testContent.getChildByName("text");
+        this.testLabel = this.testNode.getComponent("cc.Label");
     },
     
     // called every frame, uncomment this function to activate update callback
@@ -45,8 +49,8 @@ cc.Class({
     },
     
     addNotice:function(noticeData){
-        if(this.hasNotice == true)
-            return;
+        // if(this.hasNotice == true)
+            // return;
         console.log(noticeData);
         // for(var i in noticeData)
         // {
@@ -62,11 +66,16 @@ cc.Class({
         //     //this.noticeList[this.noticeCount] = newNotice;
         //     this.noticeCount ++;
         // }
-        var newNoticeTitle = this.node.getChildByName("noticeItem").getChildByName("title").getComponent("cc.Label");
-        var newNoticeText = this.node.getChildByName("noticeItem").getChildByName("text").getComponent("cc.Label");
-        newNoticeTitle.string = noticeData[1].name;
-        newNoticeText.string = noticeData[1].content;
+        this.testLabel.string = noticeData[1].content;
+
+        this.testContent.y = 0;
+        var self = this;
+        var callFunc = function(){
+            if(self.testNode.height > 350)
+                self.testContent.height = self.testNode.height + 30;
+        };
+        this.scheduleOnce(callFunc,0.05);
         
-        this.hasNotice = true;
+        // this.hasNotice = true;
     },
 });

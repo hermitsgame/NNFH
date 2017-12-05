@@ -1,5 +1,6 @@
 var gameData = require("gameData");
 var confige = require("confige");
+
 cc.Class({
     extends: cc.Component,
 
@@ -90,6 +91,7 @@ cc.Class({
 
         this.btn_inviteFriend = this.node.getChildByName("btn_inviteFriend");
         this.btn_close = this.node.getChildByName("btn_close").getComponent("cc.Button");
+        this.btn_continue = this.node.getChildByName("btn_continue");
 
         var timeLabel = this.roomInfo.getChildByName("nowTime").getComponent("cc.Label");
         var refleshTime = function(){
@@ -126,11 +128,15 @@ cc.Class({
         this.userInfoLayer = -1;
 
         this.chatLayerLoad = false;
+        this.settingLayerLoad = false;
         this.settleLayerLoad = false;
         this.userInfoLayerLoad = false;
 
         this.finishLayer = this.layerNode2.getChildByName("finishLayer").getComponent("finishLayer");
         this.finishLayer.onInit();
+
+        this.gameRoomInfoLayer = this.layerNode2.getChildByName("gameRoomInfoLayer").getComponent("gameRoomInfoLayer");
+        this.gameRoomInfoLayer.onInit()
 
         this.quickStringList = {};
         this.quickStringList[0] = "快点啊,等到花儿都谢了!";
@@ -440,7 +446,6 @@ cc.Class({
 
     h5ShareInit:function(){
         cc.log("邀请好友");
-        // var curTitle = "快打开我爱牛牛和我一块玩吧~";
         var curTitle = ""
         if(confige.roomData.gameMode == 1)
             curTitle += "【普通牛牛】,";
@@ -468,40 +473,45 @@ cc.Class({
                 curDes = "九人场,"
             else
                 curDes = "六人场,"
+            
+            if(confige.roomData.gameMode == 1 || confige.roomData.gameMode == 4)
+            {
+                switch(confige.roomData.basicType)
+                {
+                    case 0:
+                        curDes += "押注1/2/3/5,";
+                        break;
+                    case 1:
+                        curDes += "押注1/5/10/20,";
+                        break;
+                }
+            }
             if(confige.roomData.roomType == "zhajinniu"){
                 curDes += "底分" + confige.roomData.basic + ",";
             }else if(confige.roomData.roomType == "mingpaiqz"){
                 switch(confige.roomData.basicType)
                 {
                     case 1:
-                        curDes += "底分1/2,";
+                        curDes += "押注1/2,";
                         break;
                     case 2:
-                        curDes += "底分2/4,";
+                        curDes += "押注2/4,";
                         break;
                     case 3:
-                        curDes += "底分4/8,";
+                        curDes += "押注4/8,";
                         break;
                     case 4:
-                        curDes += "底分1/3/5,";
+                        curDes += "押注1/3/5,";
                         break;
                     case 5:
-                        curDes += "底分2/4/6,";
+                        curDes += "押注2/4/6,";
                         break;
                 }
+                if(confige.roomData.basic)
+                    curDes += "底分" + confige.roomData.basic + ",";
             }else if(confige.roomData.roomType == "zhajinhua"){
-                switch(confige.roomData.basic)
-                {
-                    case 1:
-                        curDes += "底分1,";
-                        break;
-                    case 2:
-                        curDes += "底分2,";
-                        break;
-                    case 5:
-                        curDes += "底分5,";
-                        break;
-                }
+                if(confige.roomData.basic)
+                    curDes += "底分" + confige.roomData.basic + ",";
                 var curMaxBet = confige.roomData.maxBet;
                 curDes += "最大单注"+curMaxBet+",";
                 var curMaxRound = confige.roomData.maxRound;
@@ -580,7 +590,6 @@ cc.Class({
 
     btnInviteFriend:function(){
         cc.log("邀请好友");
-        // var curTitle = "快打开我爱牛牛和我一块玩吧~";
         var curTitle = ""
         if(confige.roomData.gameMode == 1)
             curTitle += "【普通牛牛】,";
@@ -609,40 +618,44 @@ cc.Class({
             else
                 curDes = "六人场,"
 
+            if(confige.roomData.gameMode == 1 || confige.roomData.gameMode == 4)
+            {
+                switch(confige.roomData.basicType)
+                {
+                    case 0:
+                        curDes += "押注1/2/3/5,";
+                        break;
+                    case 1:
+                        curDes += "押注1/5/10/20,";
+                        break;
+                }
+            }
             if(confige.roomData.roomType == "zhajinniu"){
                 curDes += "底分" + confige.roomData.basic + ",";
             }else if(confige.roomData.roomType == "mingpaiqz"){
                 switch(confige.roomData.basicType)
                 {
                     case 1:
-                        curDes += "底分1/2,";
+                        curDes += "押注1/2,";
                         break;
                     case 2:
-                        curDes += "底分2/4,";
+                        curDes += "押注2/4,";
                         break;
                     case 3:
-                        curDes += "底分4/8,";
+                        curDes += "押注4/8,";
                         break;
                     case 4:
-                        curDes += "底分1/3/5,";
+                        curDes += "押注1/3/5,";
                         break;
                     case 5:
-                        curDes += "底分2/4/6,";
+                        curDes += "押注2/4/6,";
                         break;
                 }
+                if(confige.roomData.basic)
+                    curDes += "底分" + confige.roomData.basic + ",";
             }else if(confige.roomData.roomType == "zhajinhua"){
-                switch(confige.roomData.basic)
-                {
-                    case 1:
-                        curDes += "底分1,";
-                        break;
-                    case 2:
-                        curDes += "底分2,";
-                        break;
-                    case 5:
-                        curDes += "底分5,";
-                        break;
-                }
+                if(confige.roomData.basic)
+                    curDes += "底分" + confige.roomData.basic + ",";
                 var curMaxBet = confige.roomData.maxBet;
                 curDes += "最大单注"+curMaxBet+",";
                 var curMaxRound = confige.roomData.maxRound;
@@ -895,7 +908,7 @@ cc.Class({
                 break;
             case  1:
                 if(self.settingLayer == -1){
-                    if(self.settleLayerLoad == false)
+                    if(self.settingLayerLoad == false)
                     {
                         cc.loader.loadRes("prefabs/hall/settingLayer", cc.Prefab, function (err, prefabs) {
                             var newLayer = cc.instantiate(prefabs);
@@ -905,7 +918,7 @@ cc.Class({
                             self.settingLayer.parent = self;
                             self.settingLayer.showRefreshBtn();
                         });
-                        self.settleLayerLoad =true;
+                        self.settingLayerLoad =true;
                     }
                 }else{
                     self.settingLayer.showLayer();
@@ -1019,6 +1032,7 @@ cc.Class({
     },
 
     showOverLayer:function(data){
+        gameData.gameMainScene.timerItem.hideTimer();
         var self = this;
         var overCallFunc = function(){
             console.log("overLayer.overCallFunc");
@@ -1094,4 +1108,16 @@ cc.Class({
         return xmlHttp;  
     },
 
+    btnContinueClick:function(){
+        console.log("ready to continue");
+        this.btn_continue.active = false;
+        pomelo.clientSend("recover",null, function(data){
+            console.log(data);
+            console.log("recover????????");
+        });
+    },
+
+    showRoomInfoLayer:function(){
+        this.gameRoomInfoLayer.showLayer();
+    },
 });

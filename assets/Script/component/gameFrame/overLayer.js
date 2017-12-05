@@ -67,7 +67,7 @@ cc.Class({
         var newOverDataS = newOverData.getComponent("overDataOnce");
         newOverDataS.onInit();
         
-        var niuTypeCount1=0,niuTypeCount2=0,niuTypeCount3=0,niuTypeCount4=0,niuTypeCount5=0,niuTypeCount6=0;
+        var niuTypeCount1=0,niuTypeCount2=0,niuTypeCount3=0,niuTypeCount4=0,niuTypeCount5=0,niuTypeCount6=0,niuTypeCount7=0,niuTypeCount8=0,niuTypeCount9=0,niuTypeCount10=0;
 
         if(gameData.gameMainScene.isSanKung){
             for(var i in cardHistory)
@@ -123,15 +123,34 @@ cc.Class({
                     niuTypeCount6 = niuTypeCount6 + 1;
                 }else{//有牛 
                     niuTypeCount5 = niuTypeCount5 + 1;
-                    
-                    if(newType == 14)//小
-                        niuTypeCount1 = niuTypeCount1 + 1;
-                    else if(newType == 11 || newType == 12)//花
-                        niuTypeCount2 = niuTypeCount2 + 1;
-                    else if(newType == 13)//炸弹
-                        niuTypeCount3 = niuTypeCount3 + 1;
-                    else if(newType == 10)//牛牛
-                        niuTypeCount4 = niuTypeCount4 + 1;
+                    if(confige.specialType)
+                    {
+                        if(newType == 10)//牛牛
+                            niuTypeCount4 = niuTypeCount4 + 1;
+                        else if(newType == 11 || newType == 12)//花
+                            niuTypeCount2 = niuTypeCount2 + 1;
+                        else if(newType == 13)//顺子
+                            niuTypeCount7 = niuTypeCount7 + 1;
+                        else if(newType == 14)//同花
+                            niuTypeCount8 = niuTypeCount8 + 1;
+                        else if(newType == 15)//葫芦
+                            niuTypeCount9 = niuTypeCount9 + 1;
+                        else if(newType == 16)//炸弹
+                            niuTypeCount3 = niuTypeCount3 + 1;
+                        else if(newType == 17)//小
+                            niuTypeCount1 = niuTypeCount1 + 1;
+                        else if(newType == 18)//同花顺
+                            niuTypeCount10 = niuTypeCount10 + 1;
+                    }else{
+                        if(newType == 14)//小
+                            niuTypeCount1 = niuTypeCount1 + 1;
+                        else if(newType == 11 || newType == 12)//花
+                            niuTypeCount2 = niuTypeCount2 + 1;
+                        else if(newType == 13)//炸弹
+                            niuTypeCount3 = niuTypeCount3 + 1;
+                        else if(newType == 10)//牛牛
+                            niuTypeCount4 = niuTypeCount4 + 1;
+                    }
                 }
             }
             newOverDataS.node.getChildByName("niuTypeNode").getChildByName("num0").getComponent("cc.Label").string = playerData.bankerCount;
@@ -141,6 +160,14 @@ cc.Class({
             newOverDataS.node.getChildByName("niuTypeNode").getChildByName("num4").getComponent("cc.Label").string = niuTypeCount4;
             newOverDataS.node.getChildByName("niuTypeNode").getChildByName("num5").getComponent("cc.Label").string = niuTypeCount5;
             newOverDataS.node.getChildByName("niuTypeNode").getChildByName("num6").getComponent("cc.Label").string = niuTypeCount6;
+
+            if(confige.specialType)
+            {
+                newOverDataS.node.getChildByName("niuTypeNode").getChildByName("num7").getComponent("cc.Label").string = niuTypeCount7;
+                newOverDataS.node.getChildByName("niuTypeNode").getChildByName("num8").getComponent("cc.Label").string = niuTypeCount8;
+                newOverDataS.node.getChildByName("niuTypeNode").getChildByName("num9").getComponent("cc.Label").string = niuTypeCount9;
+                newOverDataS.node.getChildByName("niuTypeNode").getChildByName("num10").getComponent("cc.Label").string = niuTypeCount10;
+            }
             newOverDataS.node.getChildByName("niuTypeNode").active = true;
         }
         
@@ -411,7 +438,7 @@ cc.Class({
         console.log(cardHistory);
         console.log(this.curOverData);
 
-        var niuTypeCount1=0,niuTypeCount2=0,niuTypeCount3=0,niuTypeCount4=0,niuTypeCount5=0,niuTypeCount6=0;
+        var niuTypeCount1=0,niuTypeCount2=0,niuTypeCount3=0,niuTypeCount4=0,niuTypeCount5=0,niuTypeCount6=0,niuTypeCount7=0,niuTypeCount8=0,niuTypeCount9=0,niuTypeCount10=0;
 
         if(gameData.gameMainScene.isSanKung){
             for(var i in cardHistory)
@@ -467,14 +494,34 @@ cc.Class({
                 }else{//有牛 
                     niuTypeCount5 = niuTypeCount5 + 1;
                     
-                    if(newType == 14)//小
-                        niuTypeCount1 = niuTypeCount1 + 1;
-                    else if(newType == 11 || newType == 12)//花
-                        niuTypeCount2 = niuTypeCount2 + 1;
-                    else if(newType == 13)//炸弹
-                        niuTypeCount3 = niuTypeCount3 + 1;
-                    else if(newType == 10)//牛牛
-                        niuTypeCount4 = niuTypeCount4 + 1;
+                    if(confige.specialType)
+                    {
+                        if(newType == 10)//牛牛
+                            niuTypeCount4 = niuTypeCount4 + 1;
+                        else if(newType == 11 || newType == 12)//花
+                            niuTypeCount2 = niuTypeCount2 + 1;
+                        else if(newType == 13)//顺子
+                            niuTypeCount7 = niuTypeCount7 + 1;
+                        else if(newType == 14)//同花
+                            niuTypeCount8 = niuTypeCount8 + 1;
+                        else if(newType == 15)//葫芦
+                            niuTypeCount9 = niuTypeCount9 + 1;
+                        else if(newType == 16)//炸弹
+                            niuTypeCount3 = niuTypeCount3 + 1;
+                        else if(newType == 17)//小
+                            niuTypeCount1 = niuTypeCount1 + 1;
+                        else if(newType == 18)//同花顺
+                            niuTypeCount10 = niuTypeCount10 + 1;
+                    }else{
+                        if(newType == 14)//小
+                            niuTypeCount1 = niuTypeCount1 + 1;
+                        else if(newType == 11 || newType == 12)//花
+                            niuTypeCount2 = niuTypeCount2 + 1;
+                        else if(newType == 13)//炸弹
+                            niuTypeCount3 = niuTypeCount3 + 1;
+                        else if(newType == 10)//牛牛
+                            niuTypeCount4 = niuTypeCount4 + 1;
+                    }
                 }
             }
             this.selectInfo.getChildByName("niuTypeNode").getChildByName("num1").getComponent("cc.Label").string = niuTypeCount1;
@@ -483,6 +530,14 @@ cc.Class({
             this.selectInfo.getChildByName("niuTypeNode").getChildByName("num4").getComponent("cc.Label").string = niuTypeCount4;
             this.selectInfo.getChildByName("niuTypeNode").getChildByName("num5").getComponent("cc.Label").string = niuTypeCount5;
             this.selectInfo.getChildByName("niuTypeNode").getChildByName("num6").getComponent("cc.Label").string = niuTypeCount6;
+
+            if(confige.specialType)
+            {
+                this.selectInfo.getChildByName("niuTypeNode").getChildByName("num7").getComponent("cc.Label").string = niuTypeCount7;
+                this.selectInfo.getChildByName("niuTypeNode").getChildByName("num8").getComponent("cc.Label").string = niuTypeCount8;
+                this.selectInfo.getChildByName("niuTypeNode").getChildByName("num9").getComponent("cc.Label").string = niuTypeCount9;
+                this.selectInfo.getChildByName("niuTypeNode").getChildByName("num10").getComponent("cc.Label").string = niuTypeCount10;
+            }
             this.selectInfo.getChildByName("niuTypeNode").active = true;
         }
         

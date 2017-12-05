@@ -70,7 +70,13 @@ cc.Class({
         this.noticeLayer.onInit();
 
         this.tipsBox = this.node.getChildByName("tipsBox");
-        this.tipsBoxLabel = this.tipsBox.getChildByName("tips").getComponent("cc.Label");  
+        this.tipsBoxLabel = this.tipsBox.getChildByName("tips").getComponent("cc.Label");
+
+        this.btn_club = this.bottomNode.getChildByName("btn_club");
+        if(confige.userInfo.clubLimit == "1")
+            this.btn_club.active = true;
+        else
+            this.btn_club.active = false;
         // if(confige.curUsePlatform == 1 || confige.curUsePlatform == 2)
         // {
             
@@ -122,6 +128,7 @@ cc.Class({
         this.shareLayer = -1;
         this.giftLayer = -1;
         this.roomInfoLayer = -1;
+        this.clubLayer = -1;
 
         this.inviteLayerLoad = false;
         this.createLayerLoad = false;
@@ -133,6 +140,7 @@ cc.Class({
         this.shareLayerLoad = false;
         this.giftLayerLoad = false;
         this.roomInfoLayerLoad = false;
+        this.clubLayerLoad = false;
 
         if(cc.sys.localStorage.getItem('lastRoomID') == null)
         {
@@ -397,6 +405,7 @@ cc.Class({
                             self.settingLayer = newLayer.getComponent("settingLayer");
                             self.settingLayer.showLayer();
                             self.settingLayer.parent = self;
+                            self.settingLayer.showResetLogin();
                         });
                         self.settingLayerLoad = true;
                     }
@@ -457,6 +466,35 @@ cc.Class({
                 }else{
                     self.createLayer.showLayer(9);
                 }
+                break;
+            case 13:    //show club layer
+                pomelo.request("connector.club.getClubList",null, function(data) {
+                    if(self.clubLayer == -1){
+                        if(self.clubLayerLoad == false)
+                        {
+                            cc.loader.loadRes("prefabs/hall/clubLayer", cc.Prefab, function (err, prefabs) {
+                                var newLayer = cc.instantiate(prefabs);
+                                self.layerNode.addChild(newLayer);
+                                self.clubLayer = newLayer.getComponent("clubLayer");
+                                self.clubLayer.parent = self;
+                                if(data.flag == true)
+                                {
+                                    self.clubLayer.showLayer();
+                                    self.clubLayer.reloadClubData(data);
+                                }
+                                
+                            });
+                            self.clubLayerLoad = true;
+                        }
+                    }else{
+                        if(data.flag == true)
+                        {
+                            self.clubLayer.showLayer();
+                            self.clubLayer.reloadClubData(data);
+                        }
+                    }
+                    console.log(data)
+                });
                 break;
         };
     },

@@ -32,7 +32,7 @@ cc.Class({
         curEditBox.string = curEditNum;
         if(curEditNum == this.oriNumber)
             return;
-        if(curEditNum >= 1 && curEditNum <= 50)
+        if(curEditNum >= 1 && curEditNum <= 500)
             this.parent.roomTimeEditEnd(this.itemIndex,curEditNum);
         else
             curEditBox.string = this.oriNumber;

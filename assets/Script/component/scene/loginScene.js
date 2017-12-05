@@ -65,8 +65,8 @@ cc.Class({
             if(cc.sys.platform == cc.sys.IPAD)
                 cc.view.setDesignResolutionSize(1280,720,cc.ResolutionPolicy.EXACT_FIT);
         }else if(cc.sys.platform == cc.sys.MOBILE_BROWSER){
-            confige.shareTitle = "凤凰手游牛牛,点击可玩,无需下载";
-            confige.shareDes = "凤凰手游牛牛H5,安全无挂,放心畅玩!";
+            confige.shareTitle = "凤凰手游牛牛,快来下载加入吧~";
+            confige.shareDes = "凤凰手游牛牛,一起来玩!";
             // cc.game.setFrameRate(40);
             // confige.curUsePlatform = 0;
             // this.btn_loginNode2.active = false;
@@ -197,7 +197,7 @@ cc.Class({
         {
             cc.sys.localStorage.setItem('check_invite',false);
         }
-        if(cc.sys.localStorage.getItem('firstOpen') == null)    //首次进入游戏
+        if(cc.sys.localStorage.getItem('firstOpen') == null || cc.sys.localStorage.getItem('firstOpen') == -1)    //首次进入游戏
         {
             cc.sys.localStorage.setItem('firstOpen', false);
             
@@ -208,30 +208,7 @@ cc.Class({
             cc.sys.localStorage.setItem('userSetting', JSON.stringify(userSetting));
             confige.firstShowNotice = true;
 
-            // var curDate = new Date();
-            // var wxLoginData = {
-            //     login : 0,
-            //     openid : "",
-            //     refresh_token : "",
-            //     year : 0,
-            //     dayCount : 0
-            // };
-            // cc.sys.localStorage.setItem('wxLoginData', JSON.stringify(wxLoginData));
-
         }else{
-            // if(cc.sys.localStorage.getItem('wxLoginData') == null)
-            // {
-            //     var curDate = new Date();
-            //     var wxLoginData = {
-            //         login : 0,
-            //         openid : "",
-            //         refresh_token : "",
-            //         year : 0,
-            //         dayCount : 0
-            //     };
-            //     cc.sys.localStorage.setItem('wxLoginData', JSON.stringify(wxLoginData));
-            // }
-
             var userSetting = JSON.parse(cc.sys.localStorage.getItem('userSetting'));
             console.log(userSetting);
             if(userSetting.musicEnable == true)

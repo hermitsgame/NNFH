@@ -36,6 +36,11 @@ cc.Class({
         this.roomInfoItemList2 = [];
         this.roomInfoData = {};
 
+        this.refreshListData = {};
+        this.countLayer = this.node.getChildByName("countLayer");
+        this.countContent = this.countLayer.getChildByName("infoView").getChildByName("view").getChildByName("content");
+        this.countLabelNode = this.countContent.getChildByName("mainLabel");
+        this.countLabel = this.countLabelNode.getComponent("cc.Label");
         this.isInit = true;
     },
 
@@ -46,6 +51,8 @@ cc.Class({
         pomelo.request("connector.entryHandler.getAgencyRoom",null, function(data) {
             console.log(data);
             self.roomInfoData = data.List;
+            self.refreshListData = data.refreshList;
+            self.updateCountLayer();
             var roomInfoItemCount = 0;
             for(var i in data.List)
             {
@@ -343,40 +350,47 @@ cc.Class({
                 curDes = "九人场,"
             else
                 curDes = "六人场,"
+            
+            if(curData.gameMode == 1 || curData.gameType == "sanKung")
+            {
+                switch(curData.basicType)
+                {
+                    case 0:
+                        curDes += "押注1/2/3/5,";
+                        break;
+                    case 1:
+                        curDes += "押注1/5/10/20,";
+                        break;
+                }
+            }
+            
             if(curData.gameType == "zhajinniu"){
                 curDes += "底分" + curData.basic + ",";
             }else if(curData.gameType == "mingpaiqz"){
-                switch(curData.basic)
+                switch(curData.basicType)
                 {
                     case 1:
-                        curDes += "底分1/2,";
+                        curDes += "押注1/2,";
                         break;
                     case 2:
-                        curDes += "底分2/4,";
+                        curDes += "押注2/4,";
                         break;
                     case 3:
-                        curDes += "底分4/8,";
+                        curDes += "押注4/8,";
                         break;
                     case 4:
-                        curDes += "底分1/3/5,";
+                        curDes += "押注1/3/5,";
                         break;
                     case 5:
-                        curDes += "底分2/4/6,";
+                        curDes += "押注2/4/6,";
                         break;
                 }
+                if(curData.basic)
+                    curDes += "底分" + curData.basic + ",";
             }else if(curData.gameType == "zhajinhua"){
-                switch(curData.basic)
-                {
-                    case 1:
-                        curDes += "底分1,";
-                        break;
-                    case 2:
-                        curDes += "底分2,";
-                        break;
-                    case 5:
-                        curDes += "底分5,";
-                        break;
-                }
+                if(curData.basic)
+                    curDes += "底分" + curData.basic + ",";
+
                 var curMaxBet = curData.maxBet;
                 curDes += "最大单注"+curMaxBet+",";
                 var curMaxRound = curData.maxRound;
@@ -518,6 +532,84 @@ cc.Class({
                 }
             }
         );
+    },
+
+    hideCount:function(){
+        this.countLayer.active = false;
+    },
+
+    btnShowCount:function(){
+        this.countLayer.active = true;
+    },
+
+    updateCountLayer:function(){
+        console.log("refreshListData=====");
+        console.log(this.refreshListData);
+        var newCountStr = "";
+        if(this.refreshListData && this.refreshListData.agencyStatistics)
+        {
+            var curData = this.refreshListData.agencyStatistics;
+            for(var i in curData)
+            {
+                console.log("fuck i =====" + i);
+                console.log(curData[i]);
+                var newDateStr = "";
+                var newDateString = i.toString();
+                newDateStr = newDateString.substring(0,4) + "/" + newDateString.substring(4,6) + "/" + newDateString.substring(6,8);
+                newCountStr += newDateStr + "\n\n";
+                if(curData[i]["2"])
+                {
+                    var newGameModeStr = "明牌抢庄";
+                    for(var j in curData[i]["2"])
+                        for(var k in curData[i]["2"][j])
+                            newGameModeStr += "(" + j + "人场" + k + "局)  :  " + curData[i]["2"][j][k] + "场\n";
+                    newCountStr += newGameModeStr;
+                }
+                if(curData[i]["1"])
+                {
+                    var newGameModeStr = "普通牛牛";
+                    for(var j in curData[i]["1"])
+                        for(var k in curData[i]["1"][j])
+                            newGameModeStr += "(" + j + "人场" + k + "局)  :  " + curData[i]["1"][j][k] + "场\n";
+                    newCountStr += newGameModeStr;
+                }
+                if(curData[i]["3"])
+                {
+                    var newGameModeStr = "斗公牛";
+                    for(var j in curData[i]["3"])
+                        for(var k in curData[i]["3"][j])
+                            newGameModeStr += "(" + j + "人场" + k + "局)  :  " + curData[i]["3"][j][k] + "场\n";
+                    newCountStr += newGameModeStr;
+                }
+                if(curData[i]["7"])
+                {
+                    var newGameModeStr = "比三张";
+                    for(var j in curData[i]["7"])
+                        for(var k in curData[i]["7"][j])
+                            newGameModeStr += "(" + j + "人场" + k + "局)  :  " + curData[i]["7"][j][k] + "场\n";
+                    newCountStr += newGameModeStr;
+                }
+                if(curData[i]["8"])
+                {
+                    var newGameModeStr = "拼三张";
+                    for(var j in curData[i]["8"])
+                        for(var k in curData[i]["8"][j])
+                            newGameModeStr += "(" + j + "人场" + k + "局)  :  " + curData[i]["8"][j][k] + "场\n";
+                    newCountStr += newGameModeStr;
+                }
+                newCountStr += "代开房总共消耗" + curData[i].useDiamond + "钻(不含开房)\n\n\n";
+            }
+        }
+        console.log(newCountStr);
+        this.countLabel.string = newCountStr;
+
+        var self = this;
+        this.scheduleOnce(function() {
+            if(self.countLabelNode.height > 450)
+                self.countContent.height = self.countLabelNode.height;
+            else
+                self.countContent.height = 450;
+        }, 0.1);
     },
 
     showLayer:function(){

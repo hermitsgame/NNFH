@@ -26,6 +26,7 @@ cc.Class({
     },
 
     onInit:function(){
+        this.onShow = false;
         this.settleCount = 0;
         this.settleList = {};
         this.oriSettlePosx = 0;
@@ -59,14 +60,17 @@ cc.Class({
     showLayer:function(){
         if(this.isInit == false)
             this.onInit();
+        this.onShow = true;
         this.node.active = true;
     },
 
     hideLayer:function(){
+        this.onShow = false;
         this.node.active = false;
     },
 
-    addOneSettle:function(name, type, score, gameType,handCard,chair){     //0:nomal;1:FK;2:sanKung;3:jinHua
+    addOneSettle:function(name, type, score, gameType,handCard,chair){     //0:nomal;1:Special;2:sanKung;3:jinHua
+        console.log("addOneSettle!!!!!!!!!!!!!")
         var newSettle = {};
         if(confige.playerMax == 6)
             newSettle = cc.instantiate(this.settle_perfab);
@@ -84,7 +88,7 @@ cc.Class({
             if(gameType == 0)
                 newType.spriteFrame = confige.niuTypeFrameMap[type];
             else if(gameType == 1)
-                newType.spriteFrame = confige.niuTypeFrameMapFK[type];
+                newType.spriteFrame = confige.niuTypeFrameMapSpecial[type];
             else if(gameType == 2)
                 newType.spriteFrame = confige.sanKungTypeFrameMap[type];
             else if(gameType == 3)
@@ -173,6 +177,11 @@ cc.Class({
         this.settleCount = 0;
         this.winIco.active = false;
         this.loseIco.active = false;
+    },
+
+    hideNoClick:function(){
+        this.cleanData();
+        this.hide();
     },
     
     btn_close_click:function(){

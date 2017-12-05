@@ -49,12 +49,17 @@ pomelo.dealWithOnMessage = function(data){
     switch(data.cmd)
     {
         case "roomPlayer" :     //需要转换          OK
+            confige.specialType = false;
             confige.roomData = data;
             confige.roomPlayer = data.player;
             confige.roomId = data.roomId;
             confige.gameSceneLoadOver = false;
             confige.gameSceneLoadData = [];
             confige.playerMax = confige.roomData.playerNumber;
+            if(confige.roomData.special)
+                confige.specialType = true;
+            else
+                confige.specialType = false;
             if(confige.curSceneIndex == 1)
                 confige.curGameScene.loadingLayer.showLoading();
 
@@ -75,6 +80,7 @@ pomelo.dealWithOnMessage = function(data){
             confige.curReconnectType = confige.ON_GAME;
             break;
         case "userInfo" :
+            confige.specialType = false;
             cc.loader.onProgress = function(completedCount, totalCount, item) {
                 var progress = (completedCount / totalCount).toFixed(2);
                 var numString = "" + completedCount + "/" + totalCount;
@@ -108,6 +114,11 @@ pomelo.dealWithOnMessage = function(data){
                     confige.roomPlayer = data.reconnection.roomInfo.player;
                     confige.roomId = data.reconnection.roomInfo.roomId;
                     confige.playerMax = confige.roomData.playerNumber;
+                    if(confige.roomData.special)
+                        confige.specialType = true;
+                    else
+                        confige.specialType = false;
+
                     if(confige.curReconnectType == confige.ON_HALL)
                     {
                         //自动跳转游戏场景并恢复数据
@@ -213,7 +224,7 @@ pomelo.dealWithOnMessage = function(data){
                 pomelo.clientScene.gameInfoNode.showOverLayer(data);
             }else{
                 cc.director.loadScene('NewHallScene');
-                if(confige.curGameScene.yuyinTimeOut != -1)
+                if(confige.curGameScene.gameInfoNode.yuyinTimeOut != -1)
                 {
                     clearTimeout(confige.curGameScene.gameInfoNode.yuyinTimeOut);
                 }
@@ -292,7 +303,10 @@ pomelo.dealWithOnMessage = function(data){
             else{
                 if(confige.curSceneIndex != 2)
                     break;
-                pomelo.clientScene.showScorePool(data.bonusPool,0,data.bankerScore,data.change);
+                if(confige.roomData.roomType == "mingpaiqz")
+                    pomelo.clientScene.showScorePool(data.bonusPool);
+                else
+                    pomelo.clientScene.showScorePoolServer(data);
             }
             break; 
         case "sayMsg":
@@ -410,6 +424,15 @@ pomelo.dealWithOnMessage = function(data){
             else
                 pomelo.clientScene.compareBet(data.bet,confige.getCurChair(data.chair));
             break;
+        case "readyBegin":
+            if(confige.gameSceneLoadOver == false)
+                confige.gameSceneLoadData.push(data);
+            else
+                pomelo.clientScene.readyBegin(data.waitTime);
+            break;
+        case "recover":
+            pomelo.clientScene.gameInfoNode.btnClickRefresh();
+            break;
     }
 };
         
@@ -472,6 +495,11 @@ pomelo.clientSend = function(code,msg,cbTrue,cbFalse) {
         pomelo.request("connector.entryHandler.sendData", {"code" : code,"params" : msg}, function(data) {
             console.log("on send!!!");
             console.log(data);
+            if(data.code && data.code == 119)
+            {
+                pomelo.disconnect();
+                return;
+            }
             if(data.flag == false)
             {
                 if(cbFalse)
@@ -501,16 +529,21 @@ pomelo.clientCreateJinHua = function(){
 
 };
 
-pomelo.clientCreateRoom = function(GameMode, BankerMode, ConsumeMode, GameNum, CardMode, PlayerNum, GameType, BasicScore, CreateType, HalfwayEnter, AllowAllin,AllowAward,AllowWait, cbTrue,cbFalse) {
+pomelo.clientCreateRoom = function(GameMode, BankerMode, ConsumeMode, GameNum, CardMode, PlayerNum, GameType, BasicScore, BasicType, CreateType, HalfwayEnter, AllowAllin,AllowAward,AllowWait,AllowSpecial, cbTrue,cbFalse) {
         console.log("on create room!")
         var createType = CreateType;
 
         if(GameType == "mingpaiqz")
         {
             pomelo.request("connector.entryHandler.sendData", {"code" : createType,"params" : {gameMode: GameMode,
-                bankerMode: BankerMode, consumeMode: ConsumeMode, gameNumber: GameNum, cardMode: CardMode, playerNumber: PlayerNum, gameType: GameType, basicType:BasicScore, halfwayEnter: HalfwayEnter,allowAllin:AllowAllin,limitAward:AllowAward,isWait:AllowWait}}, function(data) {
+                bankerMode: BankerMode, consumeMode: ConsumeMode, gameNumber: GameNum, cardMode: CardMode, playerNumber: PlayerNum, gameType: GameType, basicType:BasicType, basic:BasicScore, halfwayEnter: HalfwayEnter,allowAllin:AllowAllin,limitAward:AllowAward,waitMode:AllowWait,special:AllowSpecial}}, function(data) {
                     console.log("clientCreateRoom flag is : " + data.flag)
                     console.log(data);
+                    if(data.code && data.code == 119)
+                    {
+                        pomelo.disconnect();
+                        return;
+                    }
                     if(data.flag == false)
                     {
                         if(cbFalse)
@@ -533,9 +566,14 @@ pomelo.clientCreateRoom = function(GameMode, BankerMode, ConsumeMode, GameNum, C
             );
         }else{
             pomelo.request("connector.entryHandler.sendData", {"code" : createType,"params" : {gameMode: GameMode,
-                bankerMode: BankerMode, consumeMode: ConsumeMode, gameNumber: GameNum, cardMode: CardMode, playerNumber: PlayerNum, gameType: GameType,basicType:BasicScore,basic: BasicScore, halfwayEnter: HalfwayEnter,allowAllin:AllowAllin,limitAward:AllowAward,isWait:AllowWait}}, function(data) {
+                bankerMode: BankerMode, consumeMode: ConsumeMode, gameNumber: GameNum, cardMode: CardMode, playerNumber: PlayerNum, gameType: GameType, basicType:BasicType, basic:BasicScore, halfwayEnter: HalfwayEnter,allowAllin:AllowAllin,limitAward:AllowAward,waitMode:AllowWait,special:AllowSpecial}}, function(data) {
                     console.log("clientCreateRoom flag is : " + data.flag)
                     console.log(data);
+                    if(data.code && data.code == 119)
+                    {
+                        pomelo.disconnect();
+                        return;
+                    }
                     if(data.flag == false)
                     {
                         if(cbFalse)
@@ -657,7 +695,8 @@ pomelo.goldQuite = function() {
 //         });
 //     });
 // };
-
+// confige.host = "120.55.61.144"; //测试外网2
+// confige.host = "update.5d8d.com";    //测试外网
 confige.host = "fhgame.5d8d.com";     //运营外网
 // confige.host = "192.168.1.65";          //内网
 pomelo.clientLogin = function(uid,clientLogintoken) {
