@@ -105,7 +105,7 @@ var cfg = {
 };
 
 
-cfg.curVersion = "1.0.5";
+cfg.curVersion = "1.0.6";
 cfg.oriPaomaText = "和谐游戏，拒绝赌博，如若发现，封号并提交公安机关处理。有事咨询客服，客服微信号：A79299909";
 cfg.versionCheck = "1.4.01&LSKAHDUYAPSMHAKSSA";
 cfg.resetGameData = function(){

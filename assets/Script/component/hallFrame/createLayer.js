@@ -1,4 +1,5 @@
 var tipsConf = require("tips").tipsConf;
+var diaConf = require("needDiamondConf");
 cc.Class({
     extends: cc.Component,
 
@@ -42,7 +43,7 @@ cc.Class({
         }
 
         this.newPlayerNum = 6;
-
+        this.expendNum = this.node.getChildByName("expendNum").getComponent("cc.Label");
         this.allowJoinCheck = this.node.getChildByName("allowJoin").getChildByName("check_mark");
         this.allowAllinNode = this.node.getChildByName("allowAllin");
         this.allowFKNode = this.node.getChildByName("allowFK");
@@ -425,6 +426,7 @@ cc.Class({
             this.allowAllinCheck.active = false;
         if(this.allowFK == false)
             this.allowFKCheck.active = false;
+        this.updateDiaNum();
         // this.resetToggleList[0] = this.createLayer1.getChildByName("gameTime");//.getChildByName("toggle1").getComponent("cc.Toggle");
         // this.resetToggleList[1] = this.createLayer1.getChildByName("mingCardMode");//.getChildByName("toggle1").getComponent("cc.Toggle");
         // this.resetToggleList[2] = this.createLayer1.getChildByName("expendMode");//.getChildByName("toggle1").getComponent("cc.Toggle");
@@ -754,7 +756,7 @@ cc.Class({
             this.gameType = "zhajinhua";
             this.showCreateRoomType(8);
         }
-    
+        this.updateDiaNum();
         // this.showRoomExpend();
     },
     
@@ -766,6 +768,7 @@ cc.Class({
     onChooseConsumeMode:function(event, customEventData){
         console.log("consumeMode" + customEventData);
         this.consumeMode = parseInt(customEventData);
+        this.updateDiaNum();
         //this.showRoomExpend();
     },
     
@@ -774,6 +777,7 @@ cc.Class({
         this.gameTime = parseInt(customEventData);
         if(this.gameTime == 20 && this.newPlayerNum == 9 && this.gameType == "zhajinhua")
             this.gameTime = 15;
+        this.updateDiaNum();
         // this.showRoomExpend();
     },
 
@@ -890,6 +894,14 @@ cc.Class({
         this.specialNode.active = false;
     },
 
+    updateDiaNum:function(){
+        console.log("this.gameType==="+this.gameType);
+        console.log("this.newPlayerNum==="+this.newPlayerNum);
+        console.log("this.consumeMode==="+this.consumeMode);
+        console.log("this.gameTime==="+this.gameTime);
+        this.expendNum.string = "("+diaConf.getNeedDiamond(this.gameType,this.newPlayerNum,this.consumeMode,this.gameTime)+"钻)";
+    },
+
     showLayer:function(playerNumber){
         if(this.isInit == false)
             this.onInit();
@@ -897,6 +909,7 @@ cc.Class({
         this.newPlayerNum = playerNumber;
         if(this.gameMode == 8)
             this.showCreateRoomType(8);
+        this.updateDiaNum();
     },
 
     hideLayer:function(){
